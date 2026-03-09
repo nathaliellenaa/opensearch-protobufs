@@ -12,6 +12,7 @@ java_library(
         "//protos/schemas:common_java_proto",
         "//protos/services:document_service_java_proto",
         "//protos/services:search_service_java_proto",
+        "//protos/services:ml_service_java_proto",
     ],
 )
 
