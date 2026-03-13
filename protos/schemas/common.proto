@@ -134,7 +134,7 @@ message SearchRequestBody {
   optional TrackHits track_total_hits = 7;
 
   // [optional] Values used to boost the score of specified indexes. Specify in the format of <index> : <boost-multiplier>
-  map<string, float> indices_boost = 8;
+  map<string, float> indices_boost = 8 [deprecated = true];
 
   // [optional] The fields that OpenSearch should return using their docvalue forms. Specify a format to return results in a certain format, such as date and time.
   repeated FieldAndFormat docvalue_fields = 9;
@@ -210,6 +210,9 @@ message SearchRequestBody {
 
   // [optional]
   map<string, DerivedField> derived = 35;
+
+  // [optional] Values used to boost the score of specified indexes. Specify in the format of <index> : <boost-multiplier>
+  repeated FloatMap indices_boost_2 = 36;
 }
 
 message DerivedField {
@@ -2908,6 +2911,120 @@ message ShardSearchFailure {
   ErrorCause reason = 4;
 }
 
+message ByteBuffer {
+
+  // The byte buffer array.
+  optional string array = 1;
+
+  // The byte buffer order.
+  optional ByteOrder order = 2;
+}
+
+message ColumnMeta {
+
+  // The name of a resource or configuration element.
+  optional string name = 1;
+
+  optional ColumnType column_type = 2;
+}
+
+message DataAsMap {
+
+  // The streaming content chunk.
+  optional string content = 1;
+
+  // Whether this is the last chunk.
+  optional bool is_last = 2;
+}
+
+message FloatMap {
+
+  map<string, float> float_map = 1;
+}
+
+message InferenceResults {
+
+  repeated Output output = 1;
+}
+
+message MLExecuteAgentStreamRequestBody {
+
+  ObjectMap parameters = 1;
+}
+
+message MLPredictModelStreamRequestBody {
+
+  ObjectMap parameters = 1;
+}
+
+message Output {
+
+  // The output name.
+  optional string name = 1;
+
+  optional MlResultDataType data_type = 2;
+
+  repeated int64 shape = 3;
+
+  repeated double data = 4;
+
+  optional ByteBuffer byte_buffer = 5;
+
+  // The output result.
+  optional string result = 6;
+
+  optional DataAsMap data_as_map = 7;
+}
+
+message PredictResponse {
+
+  repeated InferenceResults inference_results = 1;
+
+  optional Status status = 2;
+
+  optional PredictionResult prediction_result = 3;
+}
+
+message PredictionResult {
+
+  repeated ColumnMeta column_metas = 1;
+
+  repeated Rows rows = 2;
+}
+
+message Rows {
+
+  repeated Values values = 1;
+}
+
+message Values {
+
+  optional ColumnType column_type = 1;
+
+  // The value.
+  optional GeneralNumber value = 2;
+}
+
+message MlExecuteAgentStreamRequest {
+
+  string agent_id = 1;
+
+  // Global query parameters
+  optional GlobalParams global_params = 2;
+
+  optional MLExecuteAgentStreamRequestBody ml_execute_agent_stream_request_body = 3;
+}
+
+message MlPredictModelStreamRequest {
+
+  string model_id = 1;
+
+  // Global query parameters
+  optional GlobalParams global_params = 2;
+
+  optional MLPredictModelStreamRequestBody ml_predict_model_stream_request_body = 3;
+}
+
 enum FieldValueFactorModifier {
   FIELD_VALUE_FACTOR_MODIFIER_UNSPECIFIED = 0;
   FIELD_VALUE_FACTOR_MODIFIER_LN = 1;
@@ -3241,6 +3358,44 @@ enum SimpleQueryStringFlag {
   SIMPLE_QUERY_STRING_FLAG_PREFIX = 11;
   SIMPLE_QUERY_STRING_FLAG_SLOP = 12;
   SIMPLE_QUERY_STRING_FLAG_WHITESPACE = 13;
+}
+
+enum ByteOrder {
+  BYTE_ORDER_UNSPECIFIED = 0;
+  BYTE_ORDER_BIG_ENDIAN = 1;
+  BYTE_ORDER_LITTLE_ENDIAN = 2;
+}
+
+enum ColumnType {
+  COLUMN_TYPE_UNSPECIFIED = 0;
+  COLUMN_TYPE_BOOLEAN = 1;
+  COLUMN_TYPE_DOUBLE = 2;
+  COLUMN_TYPE_INTEGER = 3;
+  COLUMN_TYPE_STRING = 4;
+}
+
+enum MlResultDataType {
+  ML_RESULT_DATA_TYPE_UNSPECIFIED = 0;
+  ML_RESULT_DATA_TYPE_BOOLEAN = 1;
+  ML_RESULT_DATA_TYPE_FLOAT16 = 2;
+  ML_RESULT_DATA_TYPE_FLOAT32 = 3;
+  ML_RESULT_DATA_TYPE_FLOAT64 = 4;
+  ML_RESULT_DATA_TYPE_INT32 = 5;
+  ML_RESULT_DATA_TYPE_INT64 = 6;
+  ML_RESULT_DATA_TYPE_INT8 = 7;
+  ML_RESULT_DATA_TYPE_STRING = 8;
+  ML_RESULT_DATA_TYPE_UINT8 = 9;
+  ML_RESULT_DATA_TYPE_UNKNOWN = 10;
+}
+
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_CANCELLED = 1;
+  STATUS_COMPLETED = 2;
+  STATUS_COMPLETED_WITH_ERROR = 3;
+  STATUS_CREATED = 4;
+  STATUS_FAILED = 5;
+  STATUS_RUNNING = 6;
 }
 
 message ObjectMap {
