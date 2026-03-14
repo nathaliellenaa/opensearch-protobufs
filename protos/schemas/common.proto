@@ -3007,22 +3007,83 @@ message Values {
 
 message MlExecuteAgentStreamRequest {
 
-  string agent_id = 1;
+  string agent_id = 1 [deprecated = true];
 
   // Global query parameters
-  optional GlobalParams global_params = 2;
+  optional GlobalParams global_params = 2 [deprecated = true];
 
-  optional MLExecuteAgentStreamRequestBody ml_execute_agent_stream_request_body = 3;
+  optional MLExecuteAgentStreamRequestBody ml_execute_agent_stream_request_body = 3 [deprecated = true];
+
+  ExecuteAgentStreamParam parameters = 4;
 }
 
 message MlPredictModelStreamRequest {
 
-  string model_id = 1;
+  string model_id = 1 [deprecated = true];
 
   // Global query parameters
-  optional GlobalParams global_params = 2;
+  optional GlobalParams global_params = 2 [deprecated = true];
 
-  optional MLPredictModelStreamRequestBody ml_predict_model_stream_request_body = 3;
+  optional MLPredictModelStreamRequestBody ml_predict_model_stream_request_body = 3 [deprecated = true];
+
+  PredictModelStreamParam parameters = 4;
+}
+
+message ExecuteAgentStreamParam {
+
+  optional string question = 1;
+}
+
+message Message {
+
+  // The name of a resource or configuration element.
+  optional string memory_id = 1;
+
+  // The name of a resource or configuration element.
+  optional string message_id = 2;
+
+  // The create time.
+  optional string create_time = 3;
+
+  // The question in the message.
+  optional string input = 4;
+
+  // The prompt template.
+  optional string prompt_template = 5;
+
+  // The answer to the question.
+  optional string response = 6;
+
+  // The system name that generated the response.
+  optional string origin = 7;
+
+  // Additional information query.
+  optional ObjectMap additional_info = 8;
+
+  // The parent message ID.
+  optional string parent_message_id = 9;
+
+  // The trace number.
+  optional int64 trace_number = 10;
+
+  // The role of the message.
+  optional string role = 11;
+
+  optional MessageContent content = 12;
+}
+
+message MessageContent {
+
+  optional string string = 1;
+}
+
+message PredictModelStreamParam {
+
+  repeated Message messages = 1;
+
+  optional string inputs = 2;
+
+  optional string x_llm_interface = 3;
 }
 
 enum FieldValueFactorModifier {
